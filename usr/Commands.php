@@ -3,18 +3,58 @@
 class Commands {
 
     public static function help() {
-        echo "Available commands:\n\n";
-        echo "`jsop module create namespace <modulename>` - Creates a client side JS module namespace scaffold.\n";
-        echo "`jsop module create object <modulename>` - Creates a client side JS module object scaffold.\n";
-        echo "`jsop lint <file1.js file2.js ...>` - Checks the files for bad coding habbits and errors.\n";
-        echo "`jsop doc create <file1.js file2.js ...> <documentation directory>` - Creates API documentation for the specified files.\n";
-        echo "`jsop compile <file1.js file2.js ...> <output file>` - Compiles the input files into an output file.\n";
-        echo "`jsop build <file1.js file2.js ...> <output file>` - Checkes the files and compiles them into an output file on success.\n";
+        echo JSOP::colorize("Available commands:\n\n", 'white');
+        
+        // Module Create Namespace
+        echo "`";
+        echo JSOP::colorize('jsop module create namespace ','light_blue');
+        echo JSOP::colorize('<modulename>', 'red');
+        echo "`";
+        echo JSOP::colorize(" - Creates a client side JS module namespace scaffold.\n", 'white');
+        
+        // Module Create Object
+        echo "`";
+        echo JSOP::colorize('jsop module create object ','light_blue');
+        echo JSOP::colorize('<modulename>', 'red');
+        echo "`";
+        echo JSOP::colorize(" - Creates a client side JS module object scaffold.\n", 'white');
+        
+        // Lint JS FilesJSOP::colorize(
+        echo "`";
+        echo JSOP::colorize('jsop lint ','light_blue');
+        echo JSOP::colorize('<file1.js file2.js ...>', 'red');
+        echo "`";
+        echo JSOP::colorize(" - Checks the files for bad coding habbits and errors.\n", 'white');
+        
+        // Create API documentation
+        echo "`";
+        echo JSOP::colorize('jsop doc create ','light_blue');
+        echo JSOP::colorize('<file1.js file2.js ...> ', 'red');
+        echo JSOP::colorize('<documentation directory>', 'light_red');
+        echo "`";
+        echo JSOP::colorize(" - Creates API documentation for the specified files.\n", 'white');
+        
+        // Complile JS files
+        echo "`";
+        echo JSOP::colorize('jsop compile ','light_blue');
+        echo JSOP::colorize('<file1.js file2.js ...>  ', 'red');
+        echo JSOP::colorize('<output file>', 'light_red');
+        echo "`";
+        echo JSOP::colorize(" - Compiles the input files into an output file.\n", 'white');
+        
+        // Build JS files
+        echo "`";
+        echo JSOP::colorize('jsop build ','light_blue');
+        echo JSOP::colorize('<file1.js file2.js ...>  ', 'red');
+        echo JSOP::colorize('<output file>', 'light_red');
+        echo "`";
+        echo JSOP::colorize(" - Checkes the files and compiles them into an output file on success.\n", 'white');
+        
         echo "\n";
-        echo "References:\n";
-        echo "http://code.google.com/p/jsdoc-toolkit/\n";
-        echo "http://code.google.com/closure/compiler/\n";
-        echo "http://www.jslint.com/\n";
+        echo JSOP::colorize("References:\n", 'white');
+        echo JSOP::colorize('JSDOC - ', 'light_gray').JSOP::colorize("http://code.google.com/p/jsdoc-toolkit/", 'blue')."\n";
+        echo JSOP::colorize('Google Closure Compiler - ', 'light_gray').JSOP::colorize("http://code.google.com/closure/compiler/", 'blue')."\n";
+        echo JSOP::colorize('JSLint - ', 'light_gray').JSOP::colorize("http://www.jslint.com/", 'blue')."\n";
     }
 
     public static function module($params) {
@@ -22,24 +62,27 @@ class Commands {
 
         switch ($command) {
             case 'create':
+                $types = array('namespace', 'object');
+                
                 $type = array_shift($params);
                 $module_name = array_shift($params);
 
+                if (!in_array($type, $types)) {
+                    JSOP::error('Invalid module type.');
+                }
+                
                 $template = new Template();
                 $template->assign('module_name', $module_name);
 
                 file_put_contents($module_name . '.js', $template->fetch('module-' . $type . '.js'));
-                echo "Module created.\n";
-                exit(0);
+                JSOP::success('Module created.');
                 break;
             default :
-                echo "Invalid module command\n";
-                exit(1);
+                JSOP::error("Invalid module command.");
         }
     }
 
     public static function doc($params) {
-        ///var/www/sandbox/Foo.js /var/www/sandbox/Foo.bar.js /var/www/sandbox/Foo.UI.js 
         $command = array_shift($params);
 
         switch ($command) {
@@ -51,19 +94,17 @@ class Commands {
 
                 system("java -jar $sdir/tools/jsdoc/jsrun.jar $sdir/tools/jsdoc/app/run.js $files -t=$sdir/tools/jsdoc/templates/jsdoc -d=$docdir");
 
-                echo "API documentation created.\n";
+                JSOP::success("API documentation created.");
                 exit(0);
                 break;
             default :
-                echo "Invalid documentation command\n";
-                exit(1);
+                JSOP::error("Invalid documentation command.");
         }
     }
 
-    public static function lint($params) {
+    public static function lint($params, $terminate = true) {
         $sdir = JSOP::getScriptDir();
         $files = implode(' ', $params);
-        //echo "java -jar $sdir/tools/jslint/js.jar $sdir/tools/jslint/jslint-check.js $sdir/tools/jslint $files";
         @exec("java -jar $sdir/tools/jslint/js.jar $sdir/tools/jslint/jslint-check.js $sdir/tools/jslint $files", $output, $status);
         if ($status) {
             foreach ($output as $line) {
@@ -73,10 +114,11 @@ class Commands {
                     echo trim($line);
                 }
             }
+            echo "\n";
+            JSOP::error('Check failed');
         } else {
-            echo "Check passed!\n";
+            JSOP::success("Check passed.", $terminate);
         }
-        return !$status;
     }
 
     public static function compile($params) {
@@ -88,8 +130,7 @@ class Commands {
         $files = implode(' ', $params);
 
         system("java -jar $sdir/tools/closure/compiler.jar $files --js_output_file=$output");
-        echo "Build successful.\n";
-        exit(0);
+        JSOP::success("Build successful.");
     }
     
     public static function build($params) {
@@ -98,11 +139,7 @@ class Commands {
         
         array_pop($lfiles);
         
-        $status = Commands::lint($lfiles);
-        if (!$status) {
-            echo "Lint check failed!\n";
-            exit(1);
-        }
+        Commands::lint($lfiles, false);
         Commands::compile($bfiles);
     }
 
