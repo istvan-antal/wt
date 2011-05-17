@@ -8,12 +8,13 @@ var <?php echo $module_root?>;
 (function ($) {
     /**
      * Description of constructor.
-     * @class Object: <?php echo $module_name ?>.
+     * @class Widget: <?php echo $module_name ?>.
      * @constructs
      */
-    <?php echo $module_name ?> = function () {
+    <?php echo $module_name ?> = function (options) {
         var self = /** @lends <?php echo $module_name ?># */ {
-        };
+        },
+        root = $(options.root);
         
         return self;
     };

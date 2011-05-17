@@ -4,57 +4,64 @@ class Commands {
 
     public static function help() {
         echo JSOP::colorize("Available commands:\n\n", 'white');
-        
+
         // Module Create Namespace
         echo "`";
-        echo JSOP::colorize('jsop module create namespace ','light_blue');
+        echo JSOP::colorize('jsop module create namespace ', 'light_blue');
         echo JSOP::colorize('<modulename>', 'red');
         echo "`";
         echo JSOP::colorize(" - Creates a client side JS module namespace scaffold.\n", 'white');
-        
+
         // Module Create Object
         echo "`";
-        echo JSOP::colorize('jsop module create object ','light_blue');
+        echo JSOP::colorize('jsop module create object ', 'light_blue');
         echo JSOP::colorize('<modulename>', 'red');
         echo "`";
         echo JSOP::colorize(" - Creates a client side JS module object scaffold.\n", 'white');
         
+        // Module Create Widget
+        echo "`";
+        echo JSOP::colorize('jsop module create widget ', 'light_blue');
+        echo JSOP::colorize('<modulename>', 'red');
+        echo "`";
+        echo JSOP::colorize(" - Creates a client side JS widget scaffold.\n", 'white');
+
         // Lint JS FilesJSOP::colorize(
         echo "`";
-        echo JSOP::colorize('jsop lint ','light_blue');
+        echo JSOP::colorize('jsop lint ', 'light_blue');
         echo JSOP::colorize('<file1.js file2.js ...>', 'red');
         echo "`";
         echo JSOP::colorize(" - Checks the files for bad coding habbits and errors.\n", 'white');
-        
+
         // Create API documentation
         echo "`";
-        echo JSOP::colorize('jsop doc create ','light_blue');
+        echo JSOP::colorize('jsop doc create ', 'light_blue');
         echo JSOP::colorize('<file1.js file2.js ...> ', 'red');
         echo JSOP::colorize('<documentation directory>', 'light_red');
         echo "`";
         echo JSOP::colorize(" - Creates API documentation for the specified files.\n", 'white');
-        
+
         // Complile JS files
         echo "`";
-        echo JSOP::colorize('jsop compile ','light_blue');
+        echo JSOP::colorize('jsop compile ', 'light_blue');
         echo JSOP::colorize('<file1.js file2.js ...>  ', 'red');
         echo JSOP::colorize('<output file>', 'light_red');
         echo "`";
         echo JSOP::colorize(" - Compiles the input files into an output file.\n", 'white');
-        
+
         // Build JS files
         echo "`";
-        echo JSOP::colorize('jsop build ','light_blue');
+        echo JSOP::colorize('jsop build ', 'light_blue');
         echo JSOP::colorize('<file1.js file2.js ...>  ', 'red');
         echo JSOP::colorize('<output file>', 'light_red');
         echo "`";
         echo JSOP::colorize(" - Checkes the files and compiles them into an output file on success.\n", 'white');
-        
+
         echo "\n";
         echo JSOP::colorize("References:\n", 'white');
-        echo JSOP::colorize('JSDOC - ', 'light_gray').JSOP::colorize("http://code.google.com/p/jsdoc-toolkit/", 'blue')."\n";
-        echo JSOP::colorize('Google Closure Compiler - ', 'light_gray').JSOP::colorize("http://code.google.com/closure/compiler/", 'blue')."\n";
-        echo JSOP::colorize('JSLint - ', 'light_gray').JSOP::colorize("http://www.jslint.com/", 'blue')."\n";
+        echo JSOP::colorize('JSDOC - ', 'light_gray') . JSOP::colorize("http://code.google.com/p/jsdoc-toolkit/", 'blue') . "\n";
+        echo JSOP::colorize('Google Closure Compiler - ', 'light_gray') . JSOP::colorize("http://code.google.com/closure/compiler/", 'blue') . "\n";
+        echo JSOP::colorize('JSLint - ', 'light_gray') . JSOP::colorize("http://www.jslint.com/", 'blue') . "\n";
     }
 
     public static function module($params) {
@@ -62,15 +69,15 @@ class Commands {
 
         switch ($command) {
             case 'create':
-                $types = array('namespace', 'object');
-                
+                $types = array('namespace', 'object', 'widget');
+
                 $type = array_shift($params);
                 $module_name = array_shift($params);
 
                 if (!in_array($type, $types)) {
                     JSOP::error('Invalid module type.');
                 }
-                
+
                 $template = new Template();
                 $template->assign('module_name', $module_name);
 
@@ -88,9 +95,20 @@ class Commands {
         switch ($command) {
             case 'create':
                 $sdir = JSOP::getScriptDir();
-                
+
                 $docdir = array_pop($params);
                 $files = implode(' ', $params);
+
+                if (file_exists($docdir)) {
+                    if (!is_dir($docdir)) {
+                        JSOP::error('The file you specified is not a directory.');
+                    }
+                    echo JSOP::colorize("WARNING: You are about to overwrite $docdir. Are you sure about this? [N]\n", 'yellow');
+                    $response = readline(null);
+                    if (strtolower($response) !== 'y') {
+                        exit(0);
+                    }
+                }
 
                 system("java -jar $sdir/tools/jsdoc/jsrun.jar $sdir/tools/jsdoc/app/run.js $files -t=$sdir/tools/jsdoc/templates/jsdoc -d=$docdir");
 
@@ -129,16 +147,24 @@ class Commands {
         }
         $files = implode(' ', $params);
 
-        system("java -jar $sdir/tools/closure/compiler.jar $files --js_output_file=$output");
+        if (file_exists($output)) {
+            echo JSOP::colorize("WARNING: You are about to overwrite $output. Are you sure about this? [N]\n", 'yellow');
+            $response = readline(null);
+            if (strtolower($response) !== 'y') {
+                exit(0);
+            }
+        }
+
+        system("java -jar $sdir/tools/closure/compiler.jar --compilation_level SIMPLE_OPTIMIZATIONS $files --js_output_file=$output");
         JSOP::success("Build successful.");
     }
-    
+
     public static function build($params) {
         $bfiles = $params;
         $lfiles = $params;
-        
+
         array_pop($lfiles);
-        
+
         Commands::lint($lfiles, false);
         Commands::compile($bfiles);
     }
