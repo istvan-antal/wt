@@ -1,0 +1,9 @@
+Package: jsop
+Version: 0.1
+Section: base
+Priority: optional
+Architecture: all
+Depends: php5-cli, default-jre
+Maintainer: István Miklós Antal <istvan.m.antal@gmail.com>
+Description: JavaScript creator
+ Utility for building JS files.
