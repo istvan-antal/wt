@@ -1,7 +1,8 @@
 load(arguments.shift() + "/jslint.js");
 
 do {
-    var src = readFile(arguments.shift());
+    var curr = arguments.shift();
+    var src = readFile(curr);
     //evil: true, forin: true, maxerr: 100
 
     var opts = {
@@ -45,14 +46,16 @@ do {
         if (w) {
             if ( !ok[ w.reason ] ) {
                 found++;
-                print( "\n" + w.evidence + "\n" );
-                print( "    Problem at line " + w.line + " character " + w.character + ": " + w.reason );
+                if (w.evidence) {
+                  print("\n" + w.evidence + "\n\n" );
+                }
+                print( curr + ":" + w.line + ":" + w.character + ": " + w.reason + '\n' );
             }
         }
     }
 
     if ( found > 0 ) {
-        print( "\n" + found + " Error(s) found." );
+        //print( "\n" + found + " Error(s) found." );
         java.lang.System.exit(1);
     }
 
