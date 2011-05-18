@@ -4,6 +4,7 @@ require_once 'usr/loader.php';
 
 JSOP::setWorkDir(getcwd());
 JSOP::setScriptDir(dirname(__FILE__));
+JSOP::loadLocalConfig();
 
 // Remove script filename, we don't really need it
 array_shift($argv);

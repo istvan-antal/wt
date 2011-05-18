@@ -7,10 +7,5 @@ var <?php echo $module_root?>;
 
 (function ($) {
     /** @namespace */
-    <?php echo $module_name ?> = function () {
-        var self = /** @scope <?php echo $module_name ?> */ {
-        };
-        
-        return self;
-    };
+    <?php echo $module_name ?> = {};
 }(jQuery));

@@ -58,6 +58,37 @@ class Commands {
         echo JSOP::colorize(" - Checkes the files and compiles them into an output file on success.\n", 'white');
 
         echo "\n";
+        echo JSOP::colorize("Local configuration:\n", 'white');
+        
+        // Local Config set
+        echo "`";
+        echo JSOP::colorize('jsop config set ', 'light_blue');
+        echo JSOP::colorize('<key>  ', 'red');
+        echo JSOP::colorize('<value>', 'light_red');
+        echo "`";
+        echo JSOP::colorize(" - Sets a local value for a specific key.\n", 'white');
+        
+        // Local Config unset
+        echo "`";
+        echo JSOP::colorize('jsop config unset ', 'light_blue');
+        echo JSOP::colorize('<key>  ', 'red');
+        echo JSOP::colorize('<value>', 'light_red');
+        echo "`";
+        echo JSOP::colorize(" - Unsets the local value for a specific key.\n", 'white');
+        
+        // Local Config purge
+        echo "`";
+        echo JSOP::colorize('jsop config purge', 'light_blue');
+        echo "`";
+        echo JSOP::colorize(" - Removes the local config file.\n", 'white');
+        
+        // Local Config show
+        echo "`";
+        echo JSOP::colorize('jsop config show', 'light_blue');
+        echo "`";
+        echo JSOP::colorize(" - Lists the current config keys.\n", 'white');
+        
+        echo "\n";
         echo JSOP::colorize("References:\n", 'white');
         echo JSOP::colorize('JSDOC - ', 'light_gray') . JSOP::colorize("http://code.google.com/p/jsdoc-toolkit/", 'blue') . "\n";
         echo JSOP::colorize('Google Closure Compiler - ', 'light_gray') . JSOP::colorize("http://code.google.com/closure/compiler/", 'blue') . "\n";
@@ -110,7 +141,7 @@ class Commands {
                     }
                 }
 
-                system("java -jar $sdir/tools/jsdoc/jsrun.jar $sdir/tools/jsdoc/app/run.js $files -t=$sdir/tools/jsdoc/templates/jsdoc -d=$docdir");
+                system("java -jar $sdir/tools/jsdoc/jsrun.jar $sdir/tools/jsdoc/app/run.js $files -t=$sdir/tools/jsdoc/templates/".JSOP::getConf('jsdoc.theme')." -d=$docdir");
 
                 JSOP::success("API documentation created.");
                 exit(0);
@@ -167,6 +198,30 @@ class Commands {
 
         Commands::lint($lfiles, false);
         Commands::compile($bfiles);
+    }
+    
+    public static function config($params) {
+        $operation = array_shift($params);
+        
+        switch ($operation) {
+            case 'set':
+                $key = array_shift($params);
+                $value = array_shift($params);
+                JSOP::setConf($key, $value);
+                break;
+            case 'unset':
+                $key = array_shift($params);
+                JSOP::setConf($key);
+                break;
+            case 'show':
+                JSOP::showConfig();
+                break;
+            case 'purge':
+                JSOP::removeLocalConfig();
+                break;
+            default:
+                JSOP::error('Invalid operation.');
+        }
     }
 
 }
