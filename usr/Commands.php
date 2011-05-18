@@ -48,7 +48,7 @@ class Commands {
         echo JSOP::colorize('<output file>', 'light_red');
         echo "`";
         echo JSOP::colorize(" - Compiles the input files into an output file.\n", 'white');
-
+        
         // Build JS files
         echo "`";
         echo JSOP::colorize('jsop build ', 'light_blue');
@@ -87,6 +87,16 @@ class Commands {
         echo JSOP::colorize('jsop config show', 'light_blue');
         echo "`";
         echo JSOP::colorize(" - Lists the current config keys.\n", 'white');
+        
+        echo "\n";
+        echo JSOP::colorize("Experimental:\n", 'white');
+        // Complile JS files
+        echo "`";
+        echo JSOP::colorize('jsop acompile ', 'light_blue');
+        echo JSOP::colorize('<file1.js file2.js ...>  ', 'red');
+        echo JSOP::colorize('<output file>', 'light_red');
+        echo "`";
+        echo JSOP::colorize(" - Compiles the input files into an output file using the advanced settings for cc.\n", 'white');
         
         echo "\n";
         echo JSOP::colorize("References:\n", 'white');
@@ -170,7 +180,11 @@ class Commands {
         }
     }
 
-    public static function compile($params) {
+    public static function acompile($params) {
+        Commands::compile($params, true);
+    }
+
+    public static function compile($params, $advanced = false) {
         $sdir = JSOP::getScriptDir();
         $output = array_pop($params);
         foreach ($params as &$file) {
@@ -186,7 +200,7 @@ class Commands {
             }
         }
 
-        system("java -jar $sdir/tools/closure/compiler.jar --compilation_level SIMPLE_OPTIMIZATIONS $files --js_output_file=$output");
+        system("java -jar $sdir/tools/closure/compiler.jar --compilation_level ".(($advanced)?'ADVANCED':'SIMPLE')."_OPTIMIZATIONS $files --js_output_file=$output");
         JSOP::success("Build successful.");
     }
 
