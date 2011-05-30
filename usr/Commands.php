@@ -19,6 +19,13 @@ class Commands {
         echo "`";
         echo JSOP::colorize(" - Creates a client side JS module object scaffold.\n", 'white');
         
+        // Module Create Function
+        echo "`";
+        echo JSOP::colorize('jsop module create function ', 'light_blue');
+        echo JSOP::colorize('<modulename>', 'red');
+        echo "`";
+        echo JSOP::colorize(" - Creates a client side JS module function scaffold.\n", 'white');
+        
         // Module Create Widget
         echo "`";
         echo JSOP::colorize('jsop module create widget ', 'light_blue');
@@ -110,7 +117,7 @@ class Commands {
 
         switch ($command) {
             case 'create':
-                $types = array('namespace', 'object', 'widget');
+                $types = array('namespace', 'object', 'widget', 'function');
 
                 $type = array_shift($params);
                 $module_name = array_shift($params);
