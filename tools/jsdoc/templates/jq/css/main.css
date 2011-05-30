@@ -1,0 +1,26 @@
+.c {
+    clear: both;
+}
+.l {
+    float: left;
+}
+.p10 {
+    padding: 10px;
+}
+.mb10 {
+    margin-bottom: 10px;
+}
+.mt10 {
+    margin-top: 10px;
+}
+.mr10 {
+    margin-right: 10px;
+}
+.oh {
+    overflow: hidden;
+}
+
+
+body {
+    padding: 10px;
+}

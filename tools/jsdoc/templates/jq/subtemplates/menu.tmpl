@@ -1,0 +1,23 @@
+<div class="l mr10">
+	<div class="ui-widget ui-widget-content ui-corner-all p10">
+		<div class="ui-widget">
+			{+new Link().toFile(JSDOC.opt.D.index=="files"?"allclasses.html":"index.html").withText("Classes")+}
+			{+new Link().toFile(JSDOC.opt.D.index=="files"?"index.html":"files.html").withText("Files")+}
+		</div>
+	
+		<h2 class="heading1">Classes</h2>
+		
+		<input type="text" name="classFilter" class="classFilter" id="ClassFilter" placeholder="Filter"></input>
+
+		<nav>
+			<ul id="ClassList">
+				<for each="thisClass" in="publish.classes">
+					<li>{!
+						var classLink = new Link().toClass(thisClass.alias) + "";
+						output += wordwrapNamespace(classLink);
+					!}</li>
+				</for>
+			</ul>
+		</nav>
+	</div>
+</div>

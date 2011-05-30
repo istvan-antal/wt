@@ -112,7 +112,7 @@ class JSOP {
     private static $config = array(
         'colors' => true,
         'jsdoc' => array(
-            'theme' => 'codeview'
+            'theme' => 'jq'
         )
     );
     private static $home_dir;
