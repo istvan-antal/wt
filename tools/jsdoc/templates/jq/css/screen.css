@@ -197,16 +197,6 @@ table.summaryTable tr:last-child td {
 	padding-bottom: 0;
 }
 
-table.summaryTable td.attributes {
-	width: 35%;
-}
-
-table.summaryTable td.nameDescription {
-	width: 65%
-}
-
-
-
 dl.detailList {
 	margin-top: 0.5em;
 }

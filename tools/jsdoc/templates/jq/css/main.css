@@ -19,7 +19,15 @@
 .oh {
     overflow: hidden;
 }
-
+.nu {
+    text-decoration: none;
+}
+.center {
+    text-align: center;
+}
+.left {
+    text-align: left;
+}
 
 body {
     padding: 10px;

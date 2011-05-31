@@ -1,6 +1,7 @@
+{! var ownMethods = data.methods.filter(function($){return $.memberOf == data.alias  && !$.isNamespace}).sort(makeSortby("name")); !}
 {! Link.base = "../"; /* all generated links will be relative to this */ !}
 {+subtemplate("subtemplates/head.tmpl", {subtitle: data.alias})+}
-{+subtemplate("subtemplates/menu.tmpl")+}
+{+subtemplate("subtemplates/menu.tmpl", {methods: data.methods, ownMethods: ownMethods, inheritsFrom: data.inheritsFrom})+}
 <div class="oh">
 	<div class="">
 		<h1 class="ui-widget ui-widget-header ui-corner-all p10 mb10">
@@ -53,29 +54,17 @@
 		
 		<if test="!data.isBuiltin() && (data.isNamespace || data.is('CONSTRUCTOR'))">
 			<div class="ui-widget ui-widget-content ui-corner-all p10 mb10">
-				<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class {+data.alias+}.">
-					<caption class="sectionTitle">{+classType+}Summary</caption>
-					<thead>
-						<tr>
-							<th scope="col">Constructor Attributes</th>
-							<th scope="col">Constructor Name and Description</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td class="attributes">{!
+				<h2 class="sectionTitle center">{+ data.alias +}</h2>
+					<div {!if (data.comment.getTag("hilited").length){output += 'style="color: red"'}!}>
+								{!
 								if (data.isPrivate) output += "&lt;private&gt; ";
 								if (data.isInner) output += "&lt;inner&gt; ";
-							!}&nbsp;</td>
-							<td class="nameDescription" {!if (data.comment.getTag("hilited").length){output += 'style="color: red"'}!}>
-								<div class="fixedFont">
+                                                                !}
+                                                                <div class="fixedFont">
 									<b>{+ new Link().toSymbol(data.alias).inner('constructor')+}</b><if test="classType != 'Namespace '">{+ makeSignature(data.params) +}</if>
 								</div>
 								<div class="description">{+resolveLinks(summarize(data.desc))+}</div>
-							</td>
-						</tr>
-					</tbody>
-				</table>
+					</div>
 			</div>
 		</if>
 		
@@ -143,6 +132,78 @@
 				</dl>
 			</if>
 		</if>
+<!--
+#### CSS namespace
+-->
+{!
+    var cssns = data.comment.getTag("cssns");
+!}
+<if test="cssns.length">
+    <div class="ui-widget ui-widget-content ui-corner-all p10 mb10">
+	<h2 class="sectionTitle">CSS Namespaces used</h2>
+        <for each="ns" in="cssns">
+            {!
+                output += '<b class="fixedFont">' +    ns + '</b>' + '<br>';
+            !}
+        </for>
+   </div>
+</if>
+<!--
+#### CSS classes
+-->
+{!
+    var cssclsg = data.comment.getTag("css_class_group");
+    var csscls = data.comment.getTag("css_class");
+!}
+<if test="csscls.length || cssclsg.length">
+    <div class="ui-widget ui-widget-content ui-corner-all p10 mb10">
+	<h2 class="sectionTitle">CSS classes</h2>
+        <table>
+        <for each="cls" in="csscls">
+        <tr>
+        {!
+                output += '<td colspan="2" class="fixedFont">' + cls.desc + '</td>';
+            !}
+        </tr>
+        </for>
+        <for each="cls" in="cssclsg">
+            <tr>
+            {!
+                var tmp = cls.desc.split("\n");
+                output += '<th colspan="2" class="left">' +  tmp.shift()   + '' + '</th>';
+            !}
+            </tr>
+            <for each="cl" in="tmp">
+                <tr>
+                {!
+                var tmp2 = cl.split(' ');
+                output += '<td class="fixedFont">' + tmp2.shift() + '<td>';
+                output += '<td>' + tmp2.join(' ') + '<td>';
+                !}
+                </tr>
+            </for>
+            
+        </for>
+        </table>
+   </div>
+</if>
+<!--
+#### EVENTS SUMMARY
+-->
+{!
+    var triggers = data.comment.getTag("triggers");
+!}
+<if test="triggers.length">
+    <div class="ui-widget ui-widget-content ui-corner-all p10 mb10">
+	<h2 class="sectionTitle">Events trigerred</h2>
+        <for each="event" in="triggers">
+            {!
+                var tmp = event.desc.split(' ');
+                output += '<b>' + tmp[0] + '</b>' + ' on `' + tmp[1] + '`';
+            !}
+        </for>
+   </div>
+</if>
 <!--
 #### METHODS SUMMARY
 -->
@@ -378,7 +439,7 @@
 #### FIELD DETAILS
 -->
 		<if test="defined(ownProperties) && ownProperties.length">
-			<div class="details props">
+			<div class="ui-widget ui-widget-content ui-corner-all p10 mb10">
 				<div class="innerProps">
 					<h2 class="sectionTitle">
 						Field Detail
@@ -452,7 +513,7 @@
 #### METHOD DETAILS
 -->		
 		<if test="defined(ownMethods) && ownMethods.length">
-			<div class="details props">
+			<div class="ui-widget ui-widget-content ui-corner-all p10 mb10">
 				<div class="innerProps">
 					<h2 class="sectionTitle">
 						Method Detail
@@ -674,6 +735,29 @@
 				</div>
 			</div>
 		</if>
+
+<!--
+#### TODO
+-->
+{!
+    var todos = data.comment.getTag("todo");
+!}
+<if test="todos.length">
+    <div class="ui-widget ui-widget-content ui-corner-all p10 mb10">
+	<h2 class="sectionTitle">TODO</h2>
+        <ul>
+        <for each="todo" in="todos">
+            <li>
+            {!
+                output += todo.desc;
+            !}
+            </li>
+        </for>
+        </ul>
+   </div>
+</if>
+
+
 	</div>
 </div>
 {+subtemplate("subtemplates/foot.tmpl")+}

@@ -1,11 +1,11 @@
 <div class="l mr10">
 	<div class="ui-widget ui-widget-content ui-corner-all p10">
 		<div class="ui-widget">
-			{+new Link().toFile(JSDOC.opt.D.index=="files"?"allclasses.html":"index.html").withText("Classes")+}
+			{+new Link().toFile(JSDOC.opt.D.index=="files"?"allclasses.html":"index.html").withText("Modules")+}
 			{+new Link().toFile(JSDOC.opt.D.index=="files"?"index.html":"files.html").withText("Files")+}
 		</div>
 	
-		<h2 class="heading1">Classes</h2>
+		<h2 class="heading1">Modules</h2>
 		
 		<input type="text" name="classFilter" class="classFilter" id="ClassFilter" placeholder="Filter"></input>
 
@@ -20,4 +20,69 @@
 			</ul>
 		</nav>
 	</div>
+
+
+<!--
+#### METHODS SUMMARY
+-->
+		<if test="data && data.methods && data.methods.length">
+			{! var ownMethods = data.ownMethods; !}
+			
+			<div class="ui-widget ui-widget-content ui-corner-all p10 mt10">
+                                <h2 class="heading1">Methods</h2>
+				<if test="ownMethods.length">
+					<table class="summaryTable" id="MethodsList" cellspacing="0" summary="A summary of the methods documented in the class {+data.alias+}.">					
+						<tbody>
+							{!
+								var methodSummaryCount = 0;
+							!}
+							<for each="member" in="ownMethods">
+								<tr
+									{!
+										output += " class='item"+ methodSummaryCount +"'";
+										methodSummaryCount++
+									!}
+								>
+									<td class="nameDescription">
+										<div class="fixedFont"><if test="member.isStatic && member.memberOf != '_global_' && 0">{+member.memberOf+}.</if><b>{+new Link().toSymbol(member.alias).withText(member.name.replace(/\^\d+$/, ''))+}</b>{+makeSignature(member.params)+}
+										</div>
+									</td>
+								</tr>
+							</for>
+						</tbody>
+					</table>
+				</if>
+			
+				<if test="data.inheritsFrom.length">
+					<dl class="inheritsList" id="MethodsListInherited">
+					{!
+						var borrowedMembers = data.methods.filter(function($) {return $.memberOf != data.alias});
+						var contributers = [];
+						borrowedMembers.map(function($) {if (contributers.indexOf($.memberOf) < 0) contributers.push($.memberOf)});
+						for (var i = 0, l = contributers.length; i < l; i++) {
+							output +=
+								"<dt>Methods borrowed from class <span class='fixedFont'>"+new Link().toSymbol(contributers[i])+"</span>: </dt>"
+								+
+								borrowedMembers
+								.filter(
+									function($) { return $.memberOf == contributers[i] }
+								)
+								.sort(makeSortby("name"))
+								.map(
+									function($) {
+										var link = "";
+										link += "<dd><span class='fixedFont'>";
+										link += new Link().toSymbol($.alias).withText($.name);
+										link += "</span></dd>";
+										return link;
+									}
+								)
+								.join(" ");
+						}
+					!}
+					</dl>
+				</if>
+			</div>
+		</if>
+		
 </div>
