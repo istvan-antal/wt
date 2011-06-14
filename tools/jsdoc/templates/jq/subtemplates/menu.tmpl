@@ -12,10 +12,12 @@
 		<nav>
 			<ul id="ClassList">
 				<for each="thisClass" in="publish.classes">
+                                        <if test="thisClass.alias!='_global_'">
 					<li>{!
 						var classLink = new Link().toClass(thisClass.alias) + "";
 						output += wordwrapNamespace(classLink);
 					!}</li>
+                                        </if>
 				</for>
 			</ul>
 		</nav>
@@ -84,5 +86,25 @@
 				</if>
 			</div>
 		</if>
-		
+<!--
+                #### EVENTS SUMMARY
+                -->
+<if test="data && data.comment">
+                {!
+                    var triggers = data.comment.getTag("triggers");
+                !}
+                <if test="triggers.length">
+                    <div class="ui-widget ui-widget-content ui-corner-all p10 mt10">
+                        <h2 class="heading1">Events</h2>
+                        <ul>
+                        <for each="event" in="triggers">
+                            {!
+                                var tmp = event.desc.split(' ');
+                                output += '<li class="fixedFont">' + event.type + '</li>' + '';
+                            !}
+                        </for>
+                        </ul>
+                   </div>
+                </if>
+</if>		
 </div>

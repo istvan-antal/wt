@@ -7,10 +7,12 @@
 		
 		<ul id="ClassList2">
 			<for each="thisClass" in="data">
+                                <if test="thisClass.alias!='_global_'">
 				<li>
 					<h2 class="classname">{+(new Link().toSymbol(thisClass.alias))+}</h2>
 					<p>{+resolveLinks(summarize(thisClass.classDesc))+}</p>
 				</li>
+                                </if>
 			</for>
 		</ul>
 	</div>

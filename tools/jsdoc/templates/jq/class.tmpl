@@ -1,7 +1,7 @@
 {! var ownMethods = data.methods.filter(function($){return $.memberOf == data.alias  && !$.isNamespace}).sort(makeSortby("name")); !}
 {! Link.base = "../"; /* all generated links will be relative to this */ !}
 {+subtemplate("subtemplates/head.tmpl", {subtitle: data.alias})+}
-{+subtemplate("subtemplates/menu.tmpl", {methods: data.methods, ownMethods: ownMethods, inheritsFrom: data.inheritsFrom})+}
+{+subtemplate("subtemplates/menu.tmpl", {methods: data.methods, ownMethods: ownMethods, inheritsFrom: data.inheritsFrom, comment: data.comment})+}
 <div class="oh">
 	<div class="">
 		<h1 class="ui-widget ui-widget-header ui-corner-all p10 mb10">
@@ -86,9 +86,9 @@
 							<for each="member" in="ownProperties">
 								<tr>
 									<td class="attributes">{!
-										if (member.isPrivate) output += "&lt;private&gt; ";
-										if (member.isInner) output += "&lt;inner&gt; ";
-										if (member.isStatic) output += "&lt;static&gt; ";
+										if (member.isPrivate) output += "-- ";
+										if (member.isInner) output += "- ";
+										if (member.isStatic) output += " ";
 										if (member.isConstant) output += "&lt;constant&gt; ";
 									!}&nbsp;</td>
 									<td class="nameDescription">
@@ -188,26 +188,9 @@
    </div>
 </if>
 <!--
-#### EVENTS SUMMARY
--->
-{!
-    var triggers = data.comment.getTag("triggers");
-!}
-<if test="triggers.length">
-    <div class="ui-widget ui-widget-content ui-corner-all p10 mb10">
-	<h2 class="sectionTitle">Events trigerred</h2>
-        <for each="event" in="triggers">
-            {!
-                var tmp = event.desc.split(' ');
-                output += '<b>' + tmp[0] + '</b>' + ' on `' + tmp[1] + '`';
-            !}
-        </for>
-   </div>
-</if>
-<!--
 #### METHODS SUMMARY
 -->
-		<if test="data.methods.length">
+		<if test="data.methods.length && 0">
 			{! var ownMethods = data.methods.filter(function($){return $.memberOf == data.alias  && !$.isNamespace}).sort(makeSortby("name")); !}
 			
 			<div class="ui-widget ui-widget-content ui-corner-all p10 mb10">
@@ -234,9 +217,9 @@
 									!}
 								>
 									<td class="attributes">{!
-										if (member.isPrivate) output += "&lt;private&gt; ";
-										if (member.isInner) output += "&lt;inner&gt; ";
-										if (member.isStatic) output += "&lt;static&gt; ";
+										if (member.isPrivate) output += "*";
+										if (member.isInner) output += "-";
+										if (member.isStatic) output += "";
 									!}&nbsp;</td>
 									<td class="nameDescription">
 										<div class="fixedFont"><if test="member.isStatic && member.memberOf != '_global_'">{+member.memberOf+}.</if><b>{+new Link().toSymbol(member.alias).withText(member.name.replace(/\^\d+$/, ''))+}</b>{+makeSignature(member.params)+}
@@ -302,9 +285,9 @@
 						<for each="member" in="ownEvents">
 							<tr>
 								<td class="attributes">{!
-									if (member.isPrivate) output += "&lt;private&gt; ";
-									if (member.isInner) output += "&lt;inner&gt; ";
-									if (member.isStatic) output += "&lt;static&gt; ";
+									if (member.isPrivate) output += "--";
+									if (member.isInner) output += "-";
+									if (member.isStatic) output += "";
 								!}&nbsp;</td>
 								<td class="nameDescription">
 									<div class="fixedFont"><if test="member.isStatic && member.memberOf != '_global_'">{+member.memberOf+}.</if><b>{+new Link().toSymbol(member.alias).withText(member.name)+}</b>{+makeSignature(member.params)+}
@@ -449,9 +432,9 @@
 						<div class="fixedFont heading" id="{+Link.symbolNameToLinkName(member)+}">
 							<span class='lighter'>
 							{!
-								if (member.isPrivate) output += "&lt;private&gt; ";
-								if (member.isInner) output += "&lt;inner&gt; ";
-								if (member.isStatic) output += "&lt;static&gt; ";
+								if (member.isPrivate) output += "-- ";
+								if (member.isInner) output += "- ";
+								if (member.isStatic) output += "";
 								if (member.isConstant) output += "&lt;constant&gt; ";
 							!}
 							</span>
@@ -526,22 +509,22 @@
 						<for each="member" in="ownMethods">
 							<li 
 								{!
-									output += " class='item"+ methodDetailCount +"'";
+									output += " class='mb20 item"+ methodDetailCount +"'";
 									methodDetailCount++
 								!}
 							>
-								<div class="fixedFont heading" id="{+Link.symbolNameToLinkName(member)+}">
+								<div class="fixedFont heading2" id="{+Link.symbolNameToLinkName(member)+}">
 									<span class='lighter'>
 									{!
-										if (member.isPrivate) output += "&lt;private&gt; ";
-										if (member.isInner) output += "&lt;inner&gt; ";
-										if (member.isStatic) output += "&lt;static&gt; ";
+										if (member.isPrivate) output += "-- ";
+										if (member.isInner) output += "- ";
+										if (member.isStatic) output += " ";
 									!}
 									</span>
 									
 									<if test="member.type"><span class="light">{{+new Link().toSymbol(member.type)+}}</span></if>
 									
-									<if test="member.isStatic && member.memberOf != '_global_'"><span class="light">{+member.memberOf+}.</span></if><b>{+member.name.replace(/\^\d+$/, '')+}</b>{+makeSignature(member.params)+}
+									<if test="member.isStatic && member.memberOf != '_global_'"><span class="">{+member.memberOf+}.</span></if><b>{+member.name.replace(/\^\d+$/, '')+}</b>{+makeSignature(member.params)+}
 								</div>
 								
 								<div class="description">
@@ -644,9 +627,9 @@
 						<div class="fixedFont heading" id="event:{+Link.symbolNameToLinkName(member)+}">
 							<span class='lighter'>
 							{!
-								if (member.isPrivate) output += "&lt;private&gt; ";
-								if (member.isInner) output += "&lt;inner&gt; ";
-								if (member.isStatic) output += "&lt;static&gt; ";
+								if (member.isPrivate) output += "-- ";
+								if (member.isInner) output += "- ";
+								if (member.isStatic) output += " ";
 							!}
 							</span>
 							
@@ -735,7 +718,25 @@
 				</div>
 			</div>
 		</if>
-
+<!--
+#### EVENTS SUMMARY
+-->
+{!
+    var triggers = data.comment.getTag("triggers");
+!}
+<if test="triggers.length">
+    <div class="ui-widget ui-widget-content ui-corner-all p10 mb10">
+	<h2 class="sectionTitle">Events</h2>
+        <for each="event" in="triggers">
+            {!
+                var tmpl = event.desc.split('\n');
+                var tmp = tmpl.shift().split(' ');
+                output += '<b class="fixedFont">' + event.type + '</b>' + ' on `<span class="fixedFont">' + tmp[0] + '</span>`';
+                output += '<p>' + tmpl.join('\n') + '</p>';
+            !}
+        </for>
+   </div>
+</if>
 <!--
 #### TODO
 -->

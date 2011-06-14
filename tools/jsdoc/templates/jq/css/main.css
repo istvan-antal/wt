@@ -10,6 +10,9 @@
 .mb10 {
     margin-bottom: 10px;
 }
+.mb20 {
+    margin-bottom: 20px;
+}
 .mt10 {
     margin-top: 10px;
 }
@@ -31,4 +34,12 @@
 
 body {
     padding: 10px;
+}
+
+.summary, .methodDetail {
+    margin: 0;
+    list-style: none;
+}
+.nameTitle {
+    
 }
