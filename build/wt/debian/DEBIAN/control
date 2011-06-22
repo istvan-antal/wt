@@ -1,9 +1,8 @@
-Package: jsop
+Package: wt
 Version: 0.1
 Section: base
 Priority: optional
 Architecture: all
 Depends: php5-cli, default-jre
 Maintainer: István Miklós Antal <istvan.m.antal@gmail.com>
-Description: JavaScript Over Powered
- Utility for building JS files.
+Description: Web tool.

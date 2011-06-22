@@ -1,44 +1,44 @@
 <?php
 
-class JSOP {
+class WT {
 
     private static $working_dir;
     private static $script_dir;
     private static $is_work_dir = true;
 
     public static function setWorkDir($dir) {
-        JSOP::$working_dir = $dir;
+        WT::$working_dir = $dir;
     }
 
     public static function setScriptDir($dir) {
-        JSOP::$script_dir = $dir;
+        WT::$script_dir = $dir;
     }
 
     public static function getWorkDir() {
-        return JSOP::$working_dir;
+        return WT::$working_dir;
     }
 
     public static function getScriptDir() {
-        return JSOP::$script_dir;
+        return WT::$script_dir;
     }
 
     public static function isWorkDir() {
-        return JSOP::$is_work_dir;
+        return WT::$is_work_dir;
     }
 
     public static function isScriptDir() {
-        return!JSOP::$is_work_dir;
+        return!WT::$is_work_dir;
     }
 
     public static function toWorkDir() {
-        if (!JSOP::isWorkDir()) {
-            chdir(JSOP::$working_dir);
+        if (!WT::isWorkDir()) {
+            chdir(WT::$working_dir);
         }
     }
 
     public static function toScriptDir() {
-        if (!JSOP::isScriptDir()) {
-            chdir(JSOP::$script_dir);
+        if (!WT::isScriptDir()) {
+            chdir(WT::$script_dir);
         }
     }
 
@@ -75,16 +75,16 @@ class JSOP {
     );
 
     public static function colorize($string, $foreground_color = null, $background_color = null) {
-        if (!JSOP::$config['colors']) {
+        if (!WT::$config['colors']) {
             return $string;
         }
-        if (isset(JSOP::$shell_foreground_colors[$foreground_color])) {
-            $string = "\033[" . JSOP::$shell_foreground_colors[$foreground_color] . "m" . $string;
+        if (isset(WT::$shell_foreground_colors[$foreground_color])) {
+            $string = "\033[" . WT::$shell_foreground_colors[$foreground_color] . "m" . $string;
         }
 
         // Check if given background color found
-        if (isset(JSOP::$shell_background_colors[$background_color])) {
-            $string = "\033[" . JSOP::$shell_background_colors[$background_color] . "m" . $string;
+        if (isset(WT::$shell_background_colors[$background_color])) {
+            $string = "\033[" . WT::$shell_background_colors[$background_color] . "m" . $string;
         }
 
         // Add string and end coloring
@@ -94,13 +94,13 @@ class JSOP {
     }
 
     public static function error($string, $terminate = true) {
-        echo JSOP::colorize($string . "\n", 'light_red', 'black');
+        echo WT::colorize($string . "\n", 'light_red', 'black');
         if ($terminate)
             exit(1);
     }
 
     public static function success($string, $terminate = true) {
-        echo JSOP::colorize($string . "\n", 'green');
+        echo WT::colorize($string . "\n", 'green');
         if ($terminate)
             exit(0);
     }
@@ -120,18 +120,18 @@ class JSOP {
 
     public static function loadLocalConfig() {
         exec('echo ~', $output);
-        JSOP::$home_dir = $output[0];
-        JSOP::$conf_file = JSOP::$home_dir . '/' . '.jsopconf';
-        if (file_exists(JSOP::$conf_file)) {
-            $conf = json_decode(file_get_contents(JSOP::$conf_file), true);
-            JSOP::mashArrays(JSOP::$config, $conf);
+        WT::$home_dir = $output[0];
+        WT::$conf_file = WT::$home_dir . '/' . '.WTconf';
+        if (file_exists(WT::$conf_file)) {
+            $conf = json_decode(file_get_contents(WT::$conf_file), true);
+            WT::mashArrays(WT::$config, $conf);
         }
     }
 
     public static function getConf($key) {
         $keys = explode('.', $key);
 
-        $val = &JSOP::$config;
+        $val = &WT::$config;
         do {
             $key = array_shift($keys);
             $val = &$val[$key];
@@ -153,8 +153,8 @@ class JSOP {
         }
 
 
-        if (file_exists(JSOP::$conf_file)) {
-            $conf = json_decode(file_get_contents(JSOP::$conf_file), true);
+        if (file_exists(WT::$conf_file)) {
+            $conf = json_decode(file_get_contents(WT::$conf_file), true);
         } else {
             $conf = array();
         }
@@ -171,9 +171,9 @@ class JSOP {
             $val = $value;
         }
         if (!empty($conf)) {
-            file_put_contents(JSOP::$conf_file, json_encode($conf));
+            file_put_contents(WT::$conf_file, json_encode($conf));
         } else {
-            unlink(JSOP::$conf_file);
+            unlink(WT::$conf_file);
         }
     }
 
@@ -181,7 +181,7 @@ class JSOP {
         if (!empty($new)) {
             foreach ($new as $k => $v) {
                 if (is_array($v)) {
-                    JSOP::mashArrays($target[$k], $v);
+                    WT::mashArrays($target[$k], $v);
                 } else {
                     $target[$k] = $v;
                 }
@@ -190,12 +190,12 @@ class JSOP {
     }
 
     public static function removeLocalConfig() {
-        unlink(JSOP::$conf_file);
+        unlink(WT::$conf_file);
     }
 
     public static function showConfig() {
-        $conf = JSOP::$config;
-        JSOP::printArray($conf);
+        $conf = WT::$config;
+        WT::printArray($conf);
         echo "\n";
     }
 
@@ -204,7 +204,7 @@ class JSOP {
             echo str_repeat(' ', $indent) . "$k = ";
             if (is_array($v)) {
                 echo "\n";
-                JSOP::printArray($v, $indent + 2);
+                WT::printArray($v, $indent + 2);
             } else {
                 if (is_bool($v)) {
                     echo ($v ? 'true' : 'false');

@@ -2,18 +2,18 @@
 <?php
 require_once 'usr/loader.php';
 
-JSOP::setWorkDir(getcwd());
-JSOP::setScriptDir(dirname(__FILE__));
-JSOP::loadLocalConfig();
+WT::setWorkDir(getcwd());
+WT::setScriptDir(dirname(__FILE__));
+WT::loadLocalConfig();
 
 // Remove script filename, we don't really need it
 array_shift($argv);
 
 // No parameters
 if (empty ($argv)) {
-    echo "JSOP v0.1\n";
+    echo "WebTool v0.1\n";
     echo "Istvan Miklós Antal <istvan.m.antal@gmail.com>\n\n";
-    echo "Try `jsop help` for a list of available commands.\n";
+    echo "Try `wt help` for a list of available commands.\n";
     exit(0);
 }
 
