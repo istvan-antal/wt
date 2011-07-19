@@ -22,7 +22,6 @@ array_shift($argv);
 // No parameters
 if (empty ($argv)) {
     echo "WebTool v0.1\n";
-    echo "Istvan Miklós Antal <istvan.m.antal@gmail.com>\n\n";
     echo "Try `wt help` for a list of available commands.\n";
     exit(0);
 }

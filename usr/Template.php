@@ -11,6 +11,6 @@
  */
 class Template extends MicroTemplate {
     public function __construct() {
-        $this->setTemplateDirectory(JSOP::getScriptDir().'/templates');
+        $this->setTemplateDirectory(WT::getScriptDir().'/templates');
     }
 }

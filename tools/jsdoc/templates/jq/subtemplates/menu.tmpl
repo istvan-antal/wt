@@ -14,8 +14,12 @@
 				<for each="thisClass" in="publish.classes">
                                         <if test="thisClass.alias!='_global_'">
 					<li>{!
-						var classLink = new Link().toClass(thisClass.alias) + "";
-						output += wordwrapNamespace(classLink);
+                                                if (!data || thisClass.alias!=data.alias) {
+                                                    var classLink = new Link().toClass(thisClass.alias) + "";
+                                                    output += wordwrapNamespace(classLink);
+                                                } else {
+                                                    output += '<strong>' + thisClass.alias + '</strong>';
+                                                }
 					!}</li>
                                         </if>
 				</for>

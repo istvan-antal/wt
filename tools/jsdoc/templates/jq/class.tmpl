@@ -1,7 +1,7 @@
 {! var ownMethods = data.methods.filter(function($){return $.memberOf == data.alias  && !$.isNamespace}).sort(makeSortby("name")); !}
 {! Link.base = "../"; /* all generated links will be relative to this */ !}
 {+subtemplate("subtemplates/head.tmpl", {subtitle: data.alias})+}
-{+subtemplate("subtemplates/menu.tmpl", {methods: data.methods, ownMethods: ownMethods, inheritsFrom: data.inheritsFrom, comment: data.comment})+}
+{+subtemplate("subtemplates/menu.tmpl", {alias: data.alias,methods: data.methods, ownMethods: ownMethods, inheritsFrom: data.inheritsFrom, comment: data.comment})+}
 <div class="oh">
 	<div class="">
 		<h1 class="ui-widget ui-widget-header ui-corner-all p10 mb10">

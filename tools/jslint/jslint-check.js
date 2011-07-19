@@ -6,18 +6,19 @@ do {
     //evil: true, forin: true, maxerr: 100
 
     var opts = {
+        indent: 4,
         passfail: true, 
-        white: true, 
+        white: false, 
         browser: true, 
-        onevar: true, 
-        undef: true, 
-        nomen: true, 
+        onevar: false, 
+        undef: false, 
+        nomen: false, 
         eqeqeq: true, 
         plusplus: true, 
-        bitwise: true, 
+        bitwise: false, 
         regexp: true, 
-        newcap: true, 
-        immed: true, 
+        newcap: false, 
+        immed: false, 
         strict: true
     }
 
