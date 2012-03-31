@@ -1435,7 +1435,7 @@ var JSLINT = (function () {
                 the_token.identifier = true;
                 if (value === '__iterator__' || value === '__proto__') {
                     stop_at('reserved_a', line, from, value);
-                } else if (!option.nomen &&
+                } else if (!option.nomen && typeof predefined[value] === 'undefined' &&
                         (value.charAt(0) === '_' ||
                         value.charAt(value.length - 1) === '_')) {
                     warn_at('dangling_a', line, from, value);

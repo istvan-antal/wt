@@ -180,7 +180,61 @@ class Commands {
     public static function lint($params, $terminate = true) {
         $sdir = WT::getScriptDir();
         $files = implode(' ', $params);
-        @exec("java -jar $sdir/tools/jslint/js.jar $sdir/tools/jslint/jslint-check.js $sdir/tools/jslint $files", $output, $status);
+        @exec("java -jar $sdir/tools/rhino/js.jar $sdir/tools/jslint/jslint-check.js $sdir/tools/jslint $files", $output, $status);
+        if ($status) {
+            foreach ($output as $line) {
+                if (!strlen($line)) {
+                    echo "\n";
+                } else {
+                    echo trim($line);
+                }
+            }
+            echo "\n";
+            WT::error('Check failed');
+        } else {
+            WT::success("Check passed.", $terminate);
+        }
+    }
+    
+    public static function hint($params, $terminate = true) {
+        $sdir = WT::getScriptDir();
+        $options = array(
+            'white' => 'true',
+            'undef' => 'true',
+            'strict' => 'true',
+            'noempty' => 'true',
+            'newcap' => 'true',
+            'latedef' => 'true',
+            'eqeqeq' => 'true',
+            'curly' => 'true',
+            'bitwise' => 'true'
+            );
+        
+        foreach ($params as $k => $v) {
+            if (strpos($v, '=')) {
+                unset($params[$k]);
+                $tt = explode(',', $v);
+                foreach ($tt as $vv) {
+                    $t = explode('=', $vv);
+                    $options[$t[0]] = $t[1];
+                }
+            }
+        }
+        
+        
+        $optstr = '';
+        
+        $t = array();
+        foreach ($options as $k => $v) {
+            $t []= "$k=$v";
+        }
+        
+        $optstr = implode(',', $t);
+        
+        $files = implode(' ', $params);
+        //echo "java -jar $sdir/tools/rhino/js.jar $sdir/tools/jshint/rhino.js $sdir/tools/jshint/jshint.js $optstr $files\n";
+        @exec("java -jar $sdir/tools/rhino/js.jar $sdir/tools/jshint/rhino.js $sdir/tools/jshint/jshint.js $optstr $files", $output, $status);
+        
         if ($status) {
             foreach ($output as $line) {
                 if (!strlen($line)) {

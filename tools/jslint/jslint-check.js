@@ -1,11 +1,6 @@
 load(arguments.shift() + "/jslint.js");
 
-do {
-    var curr = arguments.shift();
-    var src = readFile(curr);
-    //evil: true, forin: true, maxerr: 100
-
-    var opts = {
+var opts = {
         indent: 4,
         passfail: true, 
         white: false, 
@@ -20,7 +15,34 @@ do {
         newcap: false, 
         immed: false, 
         strict: true
+    }, 
+    files = [];
+
+
+arguments.forEach(function (arg, i) {
+    var t;
+    if (arg.indexOf("=") > -1) {
+        t = arg.split('=');
+        if (t[1] === 'true') {
+            t[1] = true;
+        }
+        if (t[1] === 'false') {
+            t[1] = false;
+        }
+        opts[t[0]] = t[1];
+    } else {
+        files.push(arg);
     }
+});
+
+do {
+    var curr = files.shift();
+    var src = readFile(curr);
+    //evil: true, forin: true, maxerr: 100
+
+    
+    
+    
 
     JSLINT(src, opts);  
     // All of the following are known issues that we think are 'ok'
@@ -60,7 +82,7 @@ do {
         java.lang.System.exit(1);
     }
 
-} while (arguments.length);
+} while (files.length);
 
 print( "JSLint check passed." );
 java.lang.System.exit(0);
