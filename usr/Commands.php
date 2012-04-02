@@ -48,6 +48,13 @@ class Commands {
         echo WT::colorize('<file1.js file2.js ...>', 'red');
         echo "`";
         echo WT::colorize(" - Checks the files for bad coding habbits and errors.\n", 'white');
+        
+        // Lint JS FilesWT::colorize(
+        echo "`";
+        echo WT::colorize('wt hint ', 'light_blue');
+        echo WT::colorize('<file1.js file2.js ...>', 'red');
+        echo "`";
+        echo WT::colorize(" - Checks the files for bad coding habbits and errors.\n", 'white');
 
         // Create API documentation
         echo "`";
