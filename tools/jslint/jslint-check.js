@@ -7,7 +7,7 @@ var opts = {
         browser: true, 
         onevar: false, 
         undef: false, 
-        nomen: false, 
+        nomen: true, 
         eqeqeq: true, 
         plusplus: true, 
         bitwise: false, 

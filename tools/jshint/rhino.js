@@ -7,8 +7,7 @@
         optstr, // arg1=val1,arg2=val2,...
         predef, // global1=override,global2,global3,...
         opts   = { rhino: true },
-        retval = 0,
-        optsToInt = ['indent'];
+        retval = 0;
 
     args.forEach(function (arg) {
         if (arg.indexOf("=") > -1) {
@@ -31,7 +30,9 @@
     if (optstr) {
         optstr.split(',').forEach(function (arg) {
             var o = arg.split('=');
-            if (optsToInt.indexOf(o[0]) === -1) {
+            if (o[0] === 'indent') {
+                opts[o[0]] = parseInt(o[1], 10);
+            } else {
                 opts[o[0]] = (function (ov) {
                     switch (ov) {
                     case 'true':
@@ -42,8 +43,6 @@
                         return ov;
                     }
                 }(o[1]));
-            } else {
-                opts[o[0]] = parseInt(o[1], 10);
             }
         });
     }
