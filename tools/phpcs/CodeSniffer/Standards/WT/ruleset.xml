@@ -6,10 +6,13 @@
  <rule ref="Generic.Classes.DuplicateClassName"/>
  <rule ref="Generic.WhiteSpace.DisallowTabIndent"/>
  <rule ref="Generic.Functions.FunctionCallArgumentSpacing"/>
-
+ <rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchie"/>
+ 
  <rule ref="Squiz.Commenting.ClassComment"/>
  <rule ref="Squiz.Commenting.FunctionComment"/>
  <rule ref="Squiz.Commenting.VariableComment"/>
+ 
+ <rule ref="Zend.Files.ClosingTag"/>
  
  <rule ref="Generic.Metrics.CyclomaticComplexity">
   <properties>

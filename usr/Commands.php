@@ -143,20 +143,28 @@ class Commands {
 
         foreach ($config['pre-commit'] as $group) {
             foreach ($files as $file) {
-                if (fnmatch($group['files'], $file)) {
-                    switch ($group['job']) {
-                        case 'lintJS':
-                            system("wt lint " . ($group['node'] ? "node=true sloppy=true " : 'browser=true ') . "$file", $status);
-                            if ($status) {
-                                exit($status);
-                            }
-                            break;
-                        case 'lintPHP':
-                            system("wt lintPHP $file", $status);
-                            if ($status) {
-                                exit($status);
-                            }
-                            break;
+                $patterns = $group['files'];
+                
+                if (!is_array($patterns)) {
+                    $patterns = array($patterns);
+                }
+                
+                foreach ($patterns as $pattern) {
+                    if (fnmatch($pattern, $file)) {
+                        switch ($group['job']) {
+                            case 'lintJS':
+                                system("wt lint " . ($group['node'] ? "node=true sloppy=true " : 'browser=true ') . "$file", $status);
+                                if ($status) {
+                                    exit($status);
+                                }
+                                break;
+                            case 'lintPHP':
+                                system("wt lintPHP $file", $status);
+                                if ($status) {
+                                    exit($status);
+                                }
+                                break;
+                        }
                     }
                 }
             }

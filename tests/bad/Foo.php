@@ -10,9 +10,11 @@
  *
  * @author void
  */
-class Foo {
+class Foo 
+{
     //put your code here
     public static function foo_bar($bar,$foo) {
         
     }
 }
+?>
