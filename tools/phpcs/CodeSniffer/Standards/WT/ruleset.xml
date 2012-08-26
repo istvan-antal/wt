@@ -8,7 +8,6 @@
  <rule ref="Generic.Functions.FunctionCallArgumentSpacing"/>
  <rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchie"/>
  
- <rule ref="Squiz.Commenting.ClassComment"/>
  <rule ref="Squiz.Commenting.FunctionComment"/>
  <rule ref="Squiz.Commenting.VariableComment"/>
  
