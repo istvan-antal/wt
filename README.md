@@ -6,7 +6,7 @@ A web development command line tool.
 Setup
 -----
 
-### Mac OX X
+### Mac OS X
 
 ```bash
 cd /opt/local/
