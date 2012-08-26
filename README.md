@@ -22,3 +22,20 @@ cd /opt
 sudo git clone https://github.com/istvan-antal/wt.git
 sudo ln -s /opt/wt/wt.php /usr/local/bin/wt
 ````
+
+Updating
+--------
+
+### Mac OS X
+
+```bash
+cd /opt/local/wt
+sudo git pull
+````
+
+### Ubuntu
+
+```bash
+cd /opt/wt
+sudo git pull
+````
