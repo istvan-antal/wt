@@ -7,12 +7,12 @@ Install
 -------
 
 ```bash
-curl https://github.com/istvan-antal/wt/blob/master/install.sh | sh
+curl https://raw.github.com/istvan-antal/wt/master/install.sh | sh
 ```
 
 Updating
 --------
 
 ```bash
-curl https://github.com/istvan-antal/wt/blob/master/update.sh | sh
+curl https://raw.github.com/istvan-antal/wt/master/update.sh | sh
 ```
