@@ -112,6 +112,17 @@ class Commands {
         echo WT::colorize('wt config show', 'light_blue');
         echo "`";
         echo WT::colorize(" - Lists the current config keys.\n", 'white');
+        
+        echo "`";
+        echo WT::colorize('wt check', 'light_blue');
+        echo "`";
+        echo WT::colorize(" - Performs sourcecode validation.\n", 'white');
+
+        
+        echo "`";
+        echo WT::colorize('wt setupGit', 'light_blue');
+        echo "`";
+        echo WT::colorize(" - Sets up pre commit validation for git.\n", 'white');
 
         echo "\n";
         echo WT::colorize("Experimental:\n", 'white');
@@ -152,8 +163,14 @@ class Commands {
                 foreach ($patterns as $pattern) {
                     if (fnmatch($pattern, $file)) {
                         switch ($group['job']) {
+                            case 'command':
+                                system($group['command'], $status);
+                                if ($status) {
+                                    exit($status);
+                                }
+                                break;
                             case 'lintJS':
-                                system("wt lint " . ($group['node'] ? "node=true sloppy=true " : 'browser=true ') . "$file", $status);
+                                system("wt lint " . ($group['params'] ? $group['params'].' ': 'browser=true ') . "$file", $status);
                                 if ($status) {
                                     exit($status);
                                 }
@@ -271,6 +288,7 @@ class Commands {
     public static function lint($params, $terminate = true) {
         $sdir = WT::getScriptDir();
         $files = implode(' ', $params);
+        echo "java -jar $sdir/tools/rhino/js.jar $sdir/tools/jslint/jslint-check.js $sdir/tools/jslint $files\n";
         @exec("java -jar $sdir/tools/rhino/js.jar $sdir/tools/jslint/jslint-check.js $sdir/tools/jslint $files", $output, $status);
         if ($status) {
             foreach ($output as $line) {

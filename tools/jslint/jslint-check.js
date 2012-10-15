@@ -30,6 +30,11 @@ arguments.forEach(function (arg, i) {
             t[1] = false;
         }
         opts[t[0]] = t[1];
+        
+        if (t[0] === 'predef') {
+            opts[t[0]] = opts[t[0]].split(',');
+        }
+        
     } else {
         files.push(arg);
     }
