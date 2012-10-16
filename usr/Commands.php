@@ -148,8 +148,8 @@ class Commands {
             $cfile = $params[0];
         }
 
-        $config = json_decode(file_get_contents($cfile), true);
-
+        $config = json_decode(str_replace(array("\n", "\r", "\t"), "", file_get_contents($cfile)), true);
+        
         exec('git diff --cached --name-only', $files);
 
         foreach ($config['pre-commit'] as $group) {
@@ -288,7 +288,9 @@ class Commands {
     public static function lint($params, $terminate = true) {
         $sdir = WT::getScriptDir();
         $files = implode(' ', $params);
-        echo "java -jar $sdir/tools/rhino/js.jar $sdir/tools/jslint/jslint-check.js $sdir/tools/jslint $files\n";
+        
+        $files = str_replace('$', '\$', $files);
+        
         @exec("java -jar $sdir/tools/rhino/js.jar $sdir/tools/jslint/jslint-check.js $sdir/tools/jslint $files", $output, $status);
         if ($status) {
             foreach ($output as $line) {
