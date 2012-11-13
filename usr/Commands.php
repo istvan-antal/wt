@@ -175,6 +175,12 @@ class Commands {
                                     exit($status);
                                 }
                                 break;
+                            case 'hintJS':
+                                system("wt hint " . ($group['params'] ? $group['params'].' ': 'browser=true ') . "$file", $status);
+                                if ($status) {
+                                    exit($status);
+                                }
+                                break;
                             case 'lintPHP':
                                 system("wt lintPHP $file", $status);
                                 if ($status) {
@@ -309,6 +315,8 @@ class Commands {
 
     public static function hint($params, $terminate = true) {
         $sdir = WT::getScriptDir();
+        $globals = array();
+        
         $options = array(
             'white' => 'true',
             'undef' => 'true',
@@ -318,7 +326,9 @@ class Commands {
             'latedef' => 'true',
             'eqeqeq' => 'true',
             'curly' => 'true',
-            'bitwise' => 'true'
+            'bitwise' => 'true',
+            'immed' => 'true',
+            'noarg' => 'true'
         );
 
         foreach ($params as $k => $v) {
@@ -327,13 +337,18 @@ class Commands {
                 $tt = explode(',', $v);
                 foreach ($tt as $vv) {
                     $t = explode('=', $vv);
-                    $options[$t[0]] = $t[1];
+                    if ($t[0] === 'globals') {
+                        $globals = explode(',', $t[1]);
+                    } else {
+                        $options[$t[0]] = $t[1];
+                    }
                 }
             }
         }
 
 
         $optstr = '';
+        $glbostr = '';
 
         $t = array();
         foreach ($options as $k => $v) {
@@ -341,10 +356,23 @@ class Commands {
         }
 
         $optstr = implode(',', $t);
+        
 
         $files = implode(' ', $params);
+        
+        
+        if (!empty($globals)) {
+            $globstr = ' '.implode(' ', $globals);
+        }
+        
+        $files = str_replace('$', '\$', $files);
+        $optstr = str_replace('$', '\$', $optstr);
+        $globstr = str_replace('$', '\$', $globstr);
+        
         //echo "java -jar $sdir/tools/rhino/js.jar $sdir/tools/jshint/rhino.js $sdir/tools/jshint/jshint.js $optstr $files\n";
-        @exec("java -jar $sdir/tools/rhino/js.jar $sdir/tools/jshint/rhino.js $sdir/tools/jshint/jshint.js $optstr $files", $output, $status);
+        $command = "java -jar $sdir/tools/rhino/js.jar $sdir/tools/jshint/rhino.js $sdir/tools/jshint $files $optstr$globstr";
+        //echo $command."\n";
+        @exec($command, $output, $status);
 
         if ($status) {
             foreach ($output as $line) {
